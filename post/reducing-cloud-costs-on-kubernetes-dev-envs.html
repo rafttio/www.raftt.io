@@ -1,0 +1,425 @@
+<!DOCTYPE html><!-- Last Published: Mon Dec 04 2023 13:49:03 GMT+0000 (Coordinated Universal Time) --><html data-wf-domain="www.raftt.io" data-wf-page="65196a9209b135a52cca6aa5" data-wf-site="627284f90a9a98a4363db8a6"><head><meta charset="utf-8"/><title>Reducing Cloud Costs on Kubernetes Dev Envs | raftt Blog</title><meta content="Save over 95% on your cloud spend by implementing infrastructure and application-level modifications to your Kubernetes developer environments" name="description"/><meta content="Reducing Cloud Costs on Kubernetes Dev Envs | raftt Blog" property="og:title"/><meta content="Save over 95% on your cloud spend by implementing infrastructure and application-level modifications to your Kubernetes developer environments" property="og:description"/><meta content="/assets/627bf36ecef36c976239c7b6/64b5006968dd428585047e66_Reducing%20cloud%20costs%20on%20kubernetes%20dev%20envs.png" property="og:image"/><meta content="Reducing Cloud Costs on Kubernetes Dev Envs | raftt Blog" property="twitter:title"/><meta content="Save over 95% on your cloud spend by implementing infrastructure and application-level modifications to your Kubernetes developer environments" property="twitter:description"/><meta content="/assets/627bf36ecef36c976239c7b6/64b5006968dd428585047e66_Reducing%20cloud%20costs%20on%20kubernetes%20dev%20envs.png" property="twitter:image"/><meta property="og:type" content="website"/><meta content="summary_large_image" name="twitter:card"/><meta content="width=device-width, initial-scale=1" name="viewport"/><link href="/assets/627284f90a9a98a4363db8a6/css/raftt.webflow.c8d2b2390.min.css" rel="stylesheet" type="text/css"/><script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script><link href="/assets/627284f90a9a98a4363db8a6/62879f760c517c84b90ab376_Subtract.svg" rel="shortcut icon" type="image/x-icon"/><link href="/assets/627284f90a9a98a4363db8a6/62879f4c387d8d558e7ebebf_Frame&#32;7981.min.png" rel="apple-touch-icon"/><link href="/post/reducing-cloud-costs-on-kubernetes-dev-envs.html" rel="canonical"/><link href="https://www.raftt.io/post/rss.xml" rel="alternate" title="RSS Feed" type="application/rss+xml"/><!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NB694WN');</script>
+<!-- End Google Tag Manager -->
+
+<!-- Vimkit Code Snippet -->
+<script>!function(){if(!window.vimkit){var m=([].flat&&window.onunhandledrejection!==undefined&&window.IntersectionObserver)?'-modern':'';var s=document.createElement('script');s.type='text/javascript';s.async=!0;var e=document.getElementsByTagName('script')[0];e.parentNode.insertBefore(s,e);s.onload=function(){vimkit.load('b6dcfd3d-91f3-476b-8ece-2ac09c214436', 'https://cdn.vimkit.app/46Juzcyx/UTMotDUBo');};s.src='https://vimkit.io/static/js/core'+m+'.min.js';}}();</script>
+<!-- End Vimkit Code Snippet --><link href="https://rafttio-web.s3.eu-central-1.amazonaws.com/prism.css" rel="stylesheet" type="text/css" />
+
+<style>
+
+/* make prism-formatted code block font a little
+   smaller than the default */
+pre[class*="language-"] {
+  font-size: 0.8em;
+  line-height: 0.8em;
+}
+
+.paragraph-16{ overflow: hidden; 
+text-overflow: ellipsis; 
+display: -webkit-box; 
+-webkit-line-clamp: 3; 
+-webkit-box-orient: vertical; 
+}
+
+
+/**Styles for github gists*/
+@media (max-width: 479px) {
+  blockquote {
+     max-width: 394px;
+     overflow: auto;
+  }
+  .gist-p {max-width:394px; overflow:auto}  
+  .gist .file-data {max-height: 500px;max-width: 394px;}
+}
+
+a[href^="##"] {
+background-color: rgb(249, 249, 249);
+padding:0px 4px;
+color:#ec7c7c;
+border-radius:3px;
+font-size:14px;
+margin-left:3px;
+margin-right:3px;
+}
+
+.code-toolbar{
+margin-bottom: 2rem;
+}
+
+.markdown table thead {
+border-bottom: 2px solid;
+}
+
+.markdown table tr td, .markdown table thead th {
+padding: 3px 15px 3px 3px;
+}
+
+.markdown table tr:not(:first-child) {
+border-top: 1px solid;
+}
+
+.markdown table tr td:not(:first-child) {
+border-left: 1px solid;
+}
+
+.markdown table {
+margin-bottom: 15px;
+margin-left: auto;
+margin-right: auto;
+}
+
+</style></head><body><div data-collapse="medium" data-animation="default" data-duration="400" data-w-id="528bf05d-22c6-e4d2-86f8-558b085e53e8" data-easing="ease" data-easing2="ease" role="banner" class="navbar1_component w-nav"><div class="darkmode w-embed w-script"><script>
+
+function updateSiteMode() {
+  theme = localStorage.getItem("site-mode") || "night"
+  if (theme == "day") {
+    document
+      .querySelectorAll(".user-toggle-label-day")
+      .forEach((target) => target.classList.add("active"));
+    document
+      .querySelectorAll(".user-toggle-night")
+      .forEach((target) => target.classList.remove("active"));
+    document
+      .querySelectorAll(".toggle-box")
+      .forEach((target) => target.classList.remove("dark"));
+    document
+      .querySelectorAll("body")
+      .forEach((target) => target.classList.add("light-theme"));
+    document
+      .querySelectorAll(".toggle-pin")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".navbar1_component")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".svg-image")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".dark-image-wrap")
+      .forEach((target) => target.classList.add("hide"));
+    document
+      .querySelectorAll(".light-image-wrap")
+      .forEach((target) => target.classList.remove("hide"));
+    document
+      .querySelectorAll(".line-wide")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".navbar1_dropdown-list")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".drop-down")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".menu-icon1_line-top")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".menu-icon1_line-middle")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".menu-icon1_line-bottom")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".navbar1_menu")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".navbar1_dropdown-link")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".w-slider-nav")
+      .forEach((target) => target.classList.add("light"));
+    document
+      .querySelectorAll(".logo1_wrapper")
+      .forEach((target) => target.classList.remove("dark"));
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document
+      .querySelectorAll(".user-toggle-label-day")
+      .forEach((target) => target.classList.remove("active"));
+    document
+      .querySelectorAll(".user-toggle-night")
+      .forEach((target) => target.classList.add("active"));
+    document
+      .querySelectorAll(".toggle-box")
+      .forEach((target) => target.classList.add("dark"));
+    document
+      .querySelectorAll("body")
+      .forEach((target) => target.classList.remove("light-theme"));
+    document
+      .querySelectorAll(".toggle-pin")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".navbar1_component")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".navbar1_dropdown-list")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".svg-image")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".dark-image-wrap")
+      .forEach((target) => target.classList.remove("hide"));
+    document
+      .querySelectorAll(".light-image-wrap")
+      .forEach((target) => target.classList.add("hide"));
+    document
+      .querySelectorAll(".drop-down")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".menu-icon1_line-top")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".menu-icon1_line-middle")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".menu-icon1_line-bottom")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".navbar1_menu")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".navbar1_dropdown-link")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".w-slider-nav")
+      .forEach((target) => target.classList.remove("light"));
+    document
+      .querySelectorAll(".logo1_wrapper")
+      .forEach((target) => target.classList.add("dark"));
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+}
+
+updateSiteMode()
+document.addEventListener("DOMContentLoaded", () => {
+updateSiteMode()
+  document.querySelectorAll(".pref-click-trigger").forEach((trigger) => {
+    trigger.addEventListener("click", function () {
+      current = localStorage.getItem("site-mode") || "night"
+      localStorage.setItem("site-mode", current == "night" ? "day" : "night")
+      updateSiteMode()
+    });
+  });
+});
+
+</script></div><div class="navbar1_container"><div class="div-block-2"><a href="/index.html" class="navbar1_logo-link w-nav-brand"><div class="svg-image w-embed"><svg width="64" height="28" viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M32.5281 27.5973H36.802V6.81764C36.802 4.95721 37.5179 3.91713 39.3981 3.91713C39.7091 3.91713 40.1502 3.91713 40.1502 3.91713V0.408691C40.1502 0.408691 40.2804 0.408691 39.3981 0.408691C34.148 0.408691 32.5281 3.02354 32.5281 6.72242V27.5973V27.5973Z" fill="currentColor"/>
+<path d="M54.2732 3.8877H58.5471V21.591C58.5471 23.4515 59.263 24.4915 61.1432 24.4915C62.1846 24.4915 63.9997 24.4915 63.9997 24.4915V28C63.9997 28 62.0255 28 61.1432 28C55.8931 28 54.2732 25.3851 54.2732 21.6863V3.8877Z" fill="currentColor"/>
+<path d="M43.3899 3.8877H47.6638V21.591C47.6638 23.4515 48.3797 24.4915 50.2599 24.4915C51.3013 24.4915 51.4242 24.4915 51.4242 24.4915V28C51.4242 28 51.1422 28 50.2599 28C45.0098 28 43.3899 25.3851 43.3899 21.6863V3.8877Z" fill="currentColor"/>
+<path d="M0 9.13965H4.31006C4.31006 18.3539 4.31006 13.3952 4.31006 27.5974H0V9.13965Z" fill="currentColor"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M23.0113 22.8218H23.0909V27.5974H27.3648V16.5447C27.3648 11.6886 25.0506 8.93457 19.6197 8.93457C14.6226 8.93457 12.1349 11.2638 11.3973 15.0798L15.541 15.6438C16.0906 13.4391 17.3706 12.5748 19.4678 12.5748C22.064 12.5748 23.0981 13.9885 23.0981 16.5814H17.5008C12.793 16.5814 10.7175 19.0937 10.7175 22.5728C10.7175 26.2131 13.1546 27.9929 16.6258 27.9929C19.8583 28.0003 22.1363 26.2131 23.0113 22.8218ZM23.0909 19.8188V20.4267C23.0909 22.7339 21.1745 24.4332 18.224 24.4332C15.7869 24.4332 14.948 23.2174 14.948 21.8843C14.948 20.5879 16.0617 19.8188 18.1444 19.8188H23.0909Z" fill="currentColor"/>
+<path d="M64 9.13965H58.5474C58.5474 11.3736 60.3842 13.1901 62.6622 13.1901H64V9.13965V9.13965Z" fill="currentColor"/>
+<path d="M10.1243 13.1901H4.31006C4.31006 10.9561 6.15413 9.13965 8.42486 9.13965H10.1243V13.1901Z" fill="currentColor"/>
+<path d="M28.5649 9.13965H55.6836V12.8239H28.5649V9.13965Z" fill="currentColor"/>
+</svg></div></a></div><div class="user-mode-toggle"><div class="pref-click-trigger"><div id="w-node-dcef7cfa-0aac-6315-e281-d41d09bc6b67-085e53e8" class="user-toggle-label-day">Day</div><div class="toggle-box dark"><div class="toggle-pin"></div></div><div class="user-toggle-night active">Night</div></div></div><nav role="navigation" class="navbar1_menu w-nav-menu"><a href="/product.html" class="navbar1_link w-nav-link">Product</a><a href="/pricing.html" class="navbar1_link w-nav-link">Pricing</a><a href="/blog.html" class="navbar1_link w-nav-link">Blog</a><a href="/https://docs.raftt.io/docs/intro/raftt" class="navbar1_link w-nav-link">Docs</a><div data-hover="true" data-delay="200" data-w-id="528bf05d-22c6-e4d2-86f8-558b085e53f7" class="navbar1_menu-dropdown w-dropdown"><div class="navbar1_dropdwn-toggle w-dropdown-toggle"><div class="dropdown-icon w-icon-dropdown-toggle"></div><div>Company</div></div><nav class="navbar1_dropdown-list w-dropdown-list"><a href="/about-us.html" class="navbar1_dropdown-link w-dropdown-link">About </a><a href="/contact.html" class="navbar1_dropdown-link w-dropdown-link">Contact Us</a></nav></div><a href="/contact.html" class="button nav-cta w-nav-link">Schedule a demo</a></nav><div id="w-node-_528bf05d-22c6-e4d2-86f8-558b085e5407-085e53e8" class="navbar1_menu-button w-nav-button"><div class="menu-icon1"><div class="menu-icon1_line-top"></div><div class="menu-icon1_line-middle"><div class="menu-icon_line-middle-inner"></div></div><div class="menu-icon1_line-bottom"></div></div></div></div></div><header class="section-blogpost1"><div class="global-styles w-embed"><style>
+.light-theme{
+fill: #031959;
+}
+
+/* Snippet gets rid of top margin on first element in any rich text*/
+.w-richtext>:first-child {
+	margin-top: 0;
+}
+
+/* Snippet gets rid of bottom margin on last element in any rich text*/
+.w-richtext>:last-child, .w-richtext ol li:last-child, .w-richtext ul li:last-child {
+    margin-bottom: 0;
+}
+
+/* Snippet makes all link elements listed below to inherit color from their parent */
+a, 
+.w-tab-link,
+.w-nav-link,
+.w-dropdown-btn,
+.w-dropdown-toggle,
+.w-dropdown-link
+{
+color: inherit;
+}
+
+/* Snippet prevents all click and hover interaction with an element */
+.clickable-off {
+  pointer-events: none;
+}
+
+/* Snippet enables all click and hover interaction with an element */
+.clickable-on{
+  pointer-events: auto;
+}
+
+/* Snippet enables you to add class of div-square which creates and maintains a 1:1 dimension of a div.*/
+.div-square::after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+/*Hide focus outline for main content element*/
+    main:focus-visible {
+    outline: -webkit-focus-ring-color auto 0px;
+}
+
+/* Make sure containers never lose their center alignment*/
+.container-medium, .container-small, .container-large {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+/*Reset selects, buttons, and links styles*/
+.w-input, .w-select, a {
+color: inherit;
+text-decoration: inherit;
+font-size: inherit;
+}
+
+/*Apply "..." after 3 lines of text */
+.text-style-3lines {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+/* Apply "..." after 2 lines of text */
+.text-style-2lines {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+/* Apply "..." at 100% width */
+.truncate-width { 
+		width: 100%; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+/* Removes native scrollbar */
+.no-scrollbar {
+    -ms-overflow-style: none;  // IE 10+
+    overflow: -moz-scrollbars-none;  // Firefox
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+}
+
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.navbar1_link.w--current{
+	color: inherit;
+}
+
+  html { font-size: 1rem; }
+  @media screen and (max-width:1920px) { html { font-size: calc(0.75rem + 0.20833333333333337vw); } }
+  @media screen and (max-width:1440px) { html { font-size: calc(0.9688475546305931rem + 0.10405827263267431vw); } }
+  @media screen and (max-width:479px) { html { font-size: 1rem; } }
+
+
+
+</style></div><div class="w-layout-blockcontainer container-3 w-container"><div class="div-block-9-copy"><div class="padding-vertical-copy padding-xlarge"><div class="text-align-center max-width-xlarge align-center"><div class="margin-bottom margin-small"><h2 class="heading-7"><strong class="side-cta-text">Need fast iterations with hot reload, debugging, and collaboration over k8s envs?</strong></h2></div><div class="margin-top margin-small"><div class="button-col is-button-row-center"><div class="button-wrapper is-button-wrapper-center"><a href="/https://docs.raftt.io/docs/basics/quickstart" class="button-side w-button"><strong>Get Raftt</strong></a></div><div class="button-wrapper is-button-wrapper-center"><a href="https://calendly.com/royiarchy/raftt-demo" target="_blank" class="button-side is-dark w-button"><strong>Book a demo</strong></a></div></div></div></div></div></div><div class="container-medium"><div class="padding-vertical padding-xhuge"><div class="max-width-large align-center"><div class="blogpost1_title-wrapper"><div class="blogpost1_breadcrumb"><a href="/blog.html" class="breadcrumb-link w-inline-block"><div>&lt; Blog</div></a><a href="reducing-cloud-costs-on-kubernetes-dev-envs.html#" class="breadcrumb-link hide w-inline-block"><div>Category</div></a></div><div class="margin-bottom margin-large"><h1 class="heading-xlarge">Reducing Cloud Costs on Kubernetes Dev Envs</h1></div><div class="blogpost1_content-top"><div class="blogpost1_author-wrapper"><div class="blogpost1_author-image-wrapper"><img src="/assets/627bf36ecef36c976239c7b6/63974e0b052373df37ce13b7_gahl-saraf.jpg" loading="lazy" alt="" sizes="(max-width: 479px) 56px, (max-width: 767px) 12vw, (max-width: 991px) 7vw, 6vw" srcset="/assets/627bf36ecef36c976239c7b6/63974e0b052373df37ce13b7_gahl-saraf-p-500.jpg 500w, /assets/627bf36ecef36c976239c7b6/63974e0b052373df37ce13b7_gahl-saraf-p-800.jpg 800w, /assets/627bf36ecef36c976239c7b6/63974e0b052373df37ce13b7_gahl-saraf.jpg 1000w" class="blogpost1_author-image"/></div><div class="blogpost1_author-text"><div class="text-weight-semibold">Gahl Saraf</div><div class="blogpost1_date-wrapper"><div class="text-size-small">July 17, 2023</div><div class="blogpost1_text-divider">•</div><div class="text-size-small">13</div><div class="text-size-small"> min read</div></div></div></div><div class="w-layout-grid blogpost1_share"><a href="https://www.linkedin.com/in/gahl-saraf/" target="_blank" class="blogpost1_social-link w-inline-block"><div class="blogpost1_social-icon w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3ZM8 18C8.27614 18 8.5 17.7761 8.5 17.5V10.5C8.5 10.2239 8.27614 10 8 10H6.5C6.22386 10 6 10.2239 6 10.5V17.5C6 17.7761 6.22386 18 6.5 18H8ZM7.25 9C6.42157 9 5.75 8.32843 5.75 7.5C5.75 6.67157 6.42157 6 7.25 6C8.07843 6 8.75 6.67157 8.75 7.5C8.75 8.32843 8.07843 9 7.25 9ZM17.5 18C17.7761 18 18 17.7761 18 17.5V12.9C18.0325 11.3108 16.8576 9.95452 15.28 9.76C14.177 9.65925 13.1083 10.1744 12.5 11.1V10.5C12.5 10.2239 12.2761 10 12 10H10.5C10.2239 10 10 10.2239 10 10.5V17.5C10 17.7761 10.2239 18 10.5 18H12C12.2761 18 12.5 17.7761 12.5 17.5V13.75C12.5 12.9216 13.1716 12.25 14 12.25C14.8284 12.25 15.5 12.9216 15.5 13.75V17.5C15.5 17.7761 15.7239 18 16 18H17.5Z" fill="CurrentColor"/>
+</svg></div></a><a href="https://twitter.com/SarafGahl" target="_blank" class="blogpost1_social-link w-inline-block"><div class="blogpost1_social-icon w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.9728 6.7174C20.5084 7.33692 19.947 7.87733 19.3103 8.31776C19.3103 8.47959 19.3103 8.64142 19.3103 8.81225C19.3154 11.7511 18.1415 14.5691 16.0518 16.6345C13.962 18.6999 11.1312 19.8399 8.19405 19.7989C6.49599 19.8046 4.81967 19.4169 3.29642 18.6661C3.21428 18.6302 3.16131 18.549 3.16162 18.4593V18.3604C3.16162 18.2313 3.26623 18.1267 3.39527 18.1267C5.06442 18.0716 6.67402 17.4929 7.99634 16.4724C6.48553 16.4419 5.12619 15.5469 4.5006 14.1707C4.46901 14.0956 4.47884 14.0093 4.52657 13.9432C4.57429 13.8771 4.653 13.8407 4.73425 13.8471C5.19342 13.8932 5.65718 13.8505 6.1002 13.7212C4.43239 13.375 3.17921 11.9904 2.99986 10.2957C2.99349 10.2144 3.02992 10.1357 3.096 10.0879C3.16207 10.0402 3.24824 10.0303 3.32338 10.062C3.77094 10.2595 4.25409 10.3635 4.74324 10.3676C3.28184 9.40846 2.65061 7.58405 3.20655 5.92622C3.26394 5.76513 3.40181 5.64612 3.5695 5.61294C3.73718 5.57975 3.90996 5.63728 4.02432 5.76439C5.99639 7.86325 8.70604 9.11396 11.5819 9.25279C11.5083 8.95885 11.4721 8.65676 11.4741 8.35372C11.501 6.76472 12.4842 5.34921 13.9634 4.76987C15.4425 4.19054 17.1249 4.56203 18.223 5.71044C18.9714 5.56785 19.695 5.31645 20.3707 4.96421C20.4202 4.93331 20.483 4.93331 20.5325 4.96421C20.5634 5.01373 20.5634 5.07652 20.5325 5.12604C20.2052 5.87552 19.6523 6.50412 18.9509 6.92419C19.5651 6.85296 20.1685 6.70807 20.7482 6.49264C20.797 6.45942 20.8611 6.45942 20.9099 6.49264C20.9508 6.51134 20.9814 6.54711 20.9935 6.59042C21.0056 6.63373 20.998 6.68018 20.9728 6.7174Z" fill="CurrentColor"/>
+</svg></div></a></div></div></div></div><div class="align-center"><div class="blogpost1_image-wrapper"><img src="/assets/627bf36ecef36c976239c7b6/64b5006968dd428585047e66_Reducing&#32;cloud&#32;costs&#32;on&#32;kubernetes&#32;dev&#32;envs.png" loading="lazy" alt="" sizes="(max-width: 991px) 90vw, 61vw" srcset="/assets/627bf36ecef36c976239c7b6/64b5006968dd428585047e66_Reducing&#32;cloud&#32;costs&#32;on&#32;kubernetes&#32;dev&#32;envs-p-500.png 500w, /assets/627bf36ecef36c976239c7b6/64b5006968dd428585047e66_Reducing&#32;cloud&#32;costs&#32;on&#32;kubernetes&#32;dev&#32;envs-p-800.png 800w, /assets/627bf36ecef36c976239c7b6/64b5006968dd428585047e66_Reducing&#32;cloud&#32;costs&#32;on&#32;kubernetes&#32;dev&#32;envs-p-1080.png 1080w, /assets/627bf36ecef36c976239c7b6/64b5006968dd428585047e66_Reducing&#32;cloud&#32;costs&#32;on&#32;kubernetes&#32;dev&#32;envs-p-1600.png 1600w, /assets/627bf36ecef36c976239c7b6/64b5006968dd428585047e66_Reducing&#32;cloud&#32;costs&#32;on&#32;kubernetes&#32;dev&#32;envs-p-2000.png 2000w, /assets/627bf36ecef36c976239c7b6/64b5006968dd428585047e66_Reducing&#32;cloud&#32;costs&#32;on&#32;kubernetes&#32;dev&#32;envs.png 2240w" class="blogpost1_image"/></div></div><div class="max-width-large align-center"><div class="blogpost1_content"><div class="text-rich-text markdown w-richtext"><p>At Raftt, we’ve gone to great lengths to reduce the cloud costs for environments running on our development cluster, both for our internal usage and for our customers. In this blog post I’ll cover all the adaptations we made, so you can apply them to your own infrastructure. For each, I’ll add the approximate savings, and in the end I’ve attached a summary. </p><p>We primarily use AWS and EKS for our managed cloud clusters, so there will be certain parts of the post that will be a bit more relevant if you are using those (though the concepts carry over to any other cloud provider). We’ve covered the most significant factors, and through these were able to save over 95%, but there is lots more you can do. For instance - reduce persistent volume sizes or remove some of CloudWatch logging. I’ll start with infrastructure-level modifications - sharing clusters, autoscaling, right-sizing nodes, and using spot instances:</p><p>## Infrastructure Adaptations</p><p>### Shared clusters</p><p>This one may be a bit obvious, but it has to be said - while our production runs on its own Kubernetes cluster, we do not want a cluster for each preview or dev environment. This is because:</p><p>- It takes a long time to create Kubernetes clusters. In EKS, this is 10-15 minutes, including the time it takes for nodes to spin up. Other distributions are faster, but it still slows down development.<br/>- There are a lot of static costs associated with each cluster. For our EKS setup, this ends up being around $100 / month, including the EKS backend (~$70), an NLB load balancer (~$21), some CloudWatch logs (~$10).<br/>- Different clusters cannot share the same nodes, so resource sharing is impossible, and we end up spending much more on EC2 instances.</p><p>Instead, we will create a single long-lived cluster, and deploy our application in different namespaces. There are a bunch of ways to do that - see [ArgoCD](https://argoproj.github.io/cd), [Flux](https://fluxcd.io/), custom internal tooling, or other solutions (we use our own product). That way, we:</p><p>- Only setup the cluster and infra once, and only incur the costs once.<br/>- Are able to share the underlying resources (more on that below).</p><p>### Autoscaling</p><p>The most significant single factor in the cost of most Kubernetes clusters is the compute powering the cluster’s nodes. Several factors affect their cost, and the first we will cover is autoscaling. In cloud-based clusters with different levels of utilization, autoscaling is a must. It can reduce costs by an order of magnitude. Specifically for a cluster used for development purposes, and assuming we have infrastructure that can bring up and scale down environments as needed, this means cloud instances can be taken down (automatically):</p><p>- Over the weekends, saving 48 hours a week<br/>- Outside of working hours, saving 14 hours a day for working days (another 70 hours a week)<br/>- Holidays, and other off days - another 15 days a year<br/>- Since we are talking about environments used for developments, we can also scale down on days where people are on personal leave - another 20ish days a year.</p><p>All told, we get to `(365-(52*2)-15-20)=226` working days per engineer, and with 10ish hours of work per day - around 2260 hours, or around `2260/(365*24)=1/4` of the total yearly time.</p><p>Autoscaling over EKS can be accomplished using either the [cluster-autoscaler](https://github.com/kubernetes/autoscaler) project or [Karpenter](https://karpenter.sh/). If you want to use Spot instances, consider using Karpenter, as it has better integrations with AWS for optimizing spot pricing and availability, minimizing interruptions, and falling back to on-demand nodes if no spot instances are available.</p><p>### Node selection</p><p>Autoscaling applies on the node types we have chosen, and there are several important factors to consider when choosing them:</p><p>The most important consideration is the node size. Kubernetes works well with clusters that have many smaller nodes, rather than a few large ones. This provides finer-grained autoscaling and reduces the impact of single nodes becoming unavailable. However, there is a set overhead per node consisting of daemons running on the VM itself (Kubelet, containerd, …), and DaemonSet pods that run on each node. Make sure to take those into account, and choose a node such that those services won’t be a significant percentage of its compute. We recommend working with nodes in the `[cm].large-2xlarge` range.</p><p>It is possible to further optimize your node size by creating multiple node groups. if your workloads have diverse resource requirements (some need high memory while others need high CPU), this might be a worthwhile optimization to allow flexibility and maximum resource utilization. For example, if you have a workload that requests 8 GiB memory and 1 vCPU, it may make sense to utilize `r`-type (high memory) instances. That said, for smaller clusters (less than 10 nodes), this can be a hassle to maintain.</p><p>When using a rare node type (for example, X1 super high memory instances), you may occasionally run into problems when scaling up. This is especially true if you are limited in your availability zones, or trying to use Spot instances. Our solution was to specify a wide range of similar instances, and allow Karpenter to choose between them. For different clusters we use the `c` or `m` instance families, and provide Karpenter with a list such as: `c5a, c5, c5ad, c5d, c5n, c6a, c6i, c6id, and c6in`.</p><p>Finally, since dev environments are bursty and can tolerate cpu disruption, you can choose to use the burstable node types (in AWS - t3, t4), and save some more. At time of writing, in AWS in Frankfurt, a `t3a.2xlarge` costs $252 per month, while a [`m5a.2xlarge`](https://instances.vantage.sh/aws/ec2/m5a.2xlarge) costs $303, so a 17% discount. This is not super significant, and has some actual downsides, so we will not assume you’ve made this jump.</p><p>### Spot Instances</p><p>One of the best ways to save money on cloud instances is to use them through the Spot or interruptible program through your cloud provider. This can save anywhere from 45%-85% of the cost, without requiring any commitment.</p><p>Not all workloads perform well on spot instances, since the chance of a node needing to be replaced is significant higher. It is very worthwhile to check though, since the savings are so significant.</p><p>We use Karpenter with a Provisioner that looks like this:</p><p>```yaml<br/>apiVersion: karpenter.sh/v1alpha5<br/>kind: Provisioner<br/>metadata:<br/>  name: default<br/>spec:<br/>  requirements:<br/>    - key: node.kubernetes.io/instance-type<br/>      operator: In<br/>      values: # List of node types as described above<br/>    - key: karpenter.sh/capacity-type<br/>      operator: In<br/>      values:<br/>        - &quot;spot&quot;<br/>        - &quot;on-demand&quot;<br/>```</p><p>Which allows Karpenter to choose the most ideal instances for us, and if none are available as Spot instances, use on-demand. Since Karpenter itself does not like to run on the instances it manages, we spin up a small `t3.medium` instance for Karpenter and a select few other services that don’t tolerate interruptions well enough.</p><p>We have seen an average reduction in EC2 cost of about 60%.</p><p>## Application Adaptations</p><p>When using the same Infrastructure as Code (IaC) definitions for production, staging, preview and dev (highly recommended!) it is important to remember to modify them for use for dev environments. There are two main differences between production and dev that are relevant for our purposes:</p><p>- That dev environments are mostly idle<br/>- That we don’t necessarily need the entire environment<br/>- That we don’t need to be as resilient</p><p>In the following sections we’ll discuss applying these assumptions to the number of replicas, the resource requests and the environment</p><p>### Workload Replicas</p><p>Since we don’t need to be resilient, and the environment is expected to be mostly idle, we can scale down deployments to a single replica. This is true both for regular deployments, but also for stateful sets, where the scale down translates to storage savings as well.</p><p>Note that for stateful sets in particular, there may be business logic that might need to change to handle the different replica count, or edge cases that won’t replicate with fewer replicas. Think things like consistent routing of requests to the same stateful services.</p><p>### Workload Resource Requests</p><p>The main difference is that dev environments are idle 99% of the time. In our case, for one of our services, we are seeing the pods use 1-5 mCPU and 50MiB memory, down from abut 100 milli CPU and 160 MiB memory. So around 1/20th the CPU and 1/3 the memory. In this case, we will be able to pack 3 times as many dev environments if we modify the resource requests accordingly.</p><p>One of the difficulties with developer environments is that their usage can be “bursty” - idle 99% of the time, but suddenly busy for a short while while the developer is working with them. These spikes can cause an increase in CPU and in memory. Because CPU is a compressible resource, nothing significantly bad will happen if there is some contention, though things may run a bit more slowly. Memory, however, is a different matter. If your application takes a lot more memory when in use, you may need to increase the requests to match, or be susceptible to OOMs and evictions.</p><p>Kubernetes is reasonably good at dispersing pods across nodes, and one thing that could happen is that some nodes will end up with the “burstier” pods, while others are quiet. You could try to bind the entire environment to a single node so all nodes behave similarly, though that adds more complexity to the deployment.</p><p>### Partial environments</p><p>A final possibility for resource reduction is to intelligently choose subsets of environments to bring up for dev purposes. For example, instead of bringing up all 20 microservices, you could choose a part of the environment to bring up. There are two main ways to accomplish that:</p><p>- Automatically Identify which code was changed in the branch, to which services it belongs, and bring up those + their dependencies. Unfortunately, this is very hard to do well, and mistakes mean broken environments.<br/>- Pre-define several environment subsets, and bring those up depending on certain criteria or developer request. This is easier, but requires maintenance.</p><p>From our experience, investing in partial environments only makes sense if it is easy to do for your system, and you have a relatively large number of services - let’s say more than 20. If you do go this route, it should be possible to save an additional 30-60% of the resources in the environment.</p><p>## Putting it all together</p><p>We’ve gone through 6 complimentary strategies for reducing the cloud resource cost of running developer environments. Together, they can drastically reduce your developer-related cloud bill. Let’s bring this down to actual money. Let’s say we have a project that has 15 microservices, with 3 replicas in production, and an overall resource utilization in production of 80GiB memory and 20 CPUs. This costs us (assuming AWS in Frankfurt):</p><p>|  | Count | Cost | Subtotal |<br/>| --- | --- | --- | --- |<br/>| EKS Cluster | 1 | $70 | $70 |<br/>| Load Balancer | 1 | $21 | $21 |<br/>| CloudWatch | 1 | $10 | $10 |<br/>| Static management node (t3.medium) | 1 | $35 | $35 |<br/>| Main EC2 Nodes (m5a.2xlarge) | 3 | $303 | $909 |<br/>| **Total** |  |  | $1045 |</p><p>Our comparison state is one where we deploy a full copy of our infrastructure for each environment. If you already have some of this implemented, take a look at the difference. Lets take a look at the savings we get from applying all the above techniques.</p><p>1. Shared cluster - so we have 0 incremental costs for each environment. Assuming 10 environments on average using the cluster, let’s amortize the cost - `(70+21+10+35)/10` = $13.6<br/>2. Autoscaling - Instead of keeping our 3 main nodes up all the time, we enable autoscaling and reduce their cost to `(3*303)/4` = $227.25<br/>3. Node selection - as discussed in that section, while we could save another 17% and switch to t3 instances, we’ll skip this optimization for now.<br/>4. Spot instances - implementing spot instances, and using the up to date pricing, we reduce our cost per node to $134.46, and taking into account the autoscaling and node count, a total of `(3*134.46)/4` = $100.845<br/>5. Workload replicas - reducing our replica count to 1 cuts our resource usage by 1/3, and leaves us with 1 instead of 3 nodes. At this point it may make sense to choose smaller nodes, but since pricing is generally linear with node resources, let’s ignore that. Our updated price for the EC2 instances is `134.46/4` = $33.6<br/>6. Workload resource requests - cutting our resource requests to around one-third translates directly to fewer EC2 instances, so - `33.6/3` = $11.2<br/>7. Partial environments - if we can easily cut our environment and bring up only what is necessary, we can save another ~50%, and get to `11.2/2` = $5.1</p><p>To sum up, we have $13.6 static costs and $5.1 usage costs per env. We’ve gone down more than 50x, from $1045 for our production to $18.7 for each dev env. And since our largest portion is the cluster static costs, we scale really well - increasing this to 20 environments means the price per env drops to $11.9.</p><p>This is, of course, a rough approximation, and doesn’t count things like EBS volumes, increased CloudWatch usage or less-than-optimal node utilization. But even if we are off by 20%, we still end up over 40x cheaper.</p><p>### Sounds great, right? What do I need to do to make this happen?</p><p>1. Make sure you have some declarative way to define the infrastructure - Terraform, CloudFormation, CDK, Pulumi - whatever. This is crucial because making incremental improvements is *significantly* easier if you can see the exact effects of the changes you are making and roll back as needed. <br/>2. Next, adopt some kind of environment orchestration solution - while we don’t use Argo or Flux internally, I’ve heard great things about either of them.<br/>3. Once you have a working setup, start with the infrastructure changes, and adopt them one by one - autoscaling, right-sizing nodes, and switching to spot instances.<br/>4. Next, modify your application deployment (through Helm / Kustomize / whatever you are using) to reduce replicas and resource requests, and create partial configurations if possible.<br/>5. Finally, wait a day and go to your AWS Cost Explorer page and see how far you got 🙂.</p><p>To actually be able to use these environments for development, you will want a solution that gives developers access to these environments, and provides fast iterations, hot reloading and debugging. For that, (or if all of this seems like a *lot* of work), let’s get in touch 😉.</p><p>‍</p></div></div><div class="blogpost1_content-bottom"><div class="blogpost1_share-wrapper"><div class="text-size-medium text-weight-semibold">Share this post</div><div class="w-layout-grid blogpost1_share"><a id="linkedin-button" href="reducing-cloud-costs-on-kubernetes-dev-envs.html#" class="blogpost1_social-link w-inline-block"><div class="blogpost1_social-icon w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3ZM8 18C8.27614 18 8.5 17.7761 8.5 17.5V10.5C8.5 10.2239 8.27614 10 8 10H6.5C6.22386 10 6 10.2239 6 10.5V17.5C6 17.7761 6.22386 18 6.5 18H8ZM7.25 9C6.42157 9 5.75 8.32843 5.75 7.5C5.75 6.67157 6.42157 6 7.25 6C8.07843 6 8.75 6.67157 8.75 7.5C8.75 8.32843 8.07843 9 7.25 9ZM17.5 18C17.7761 18 18 17.7761 18 17.5V12.9C18.0325 11.3108 16.8576 9.95452 15.28 9.76C14.177 9.65925 13.1083 10.1744 12.5 11.1V10.5C12.5 10.2239 12.2761 10 12 10H10.5C10.2239 10 10 10.2239 10 10.5V17.5C10 17.7761 10.2239 18 10.5 18H12C12.2761 18 12.5 17.7761 12.5 17.5V13.75C12.5 12.9216 13.1716 12.25 14 12.25C14.8284 12.25 15.5 12.9216 15.5 13.75V17.5C15.5 17.7761 15.7239 18 16 18H17.5Z" fill="CurrentColor"/>
+</svg></div></a><a id="twitter-button" href="reducing-cloud-costs-on-kubernetes-dev-envs.html#" class="blogpost1_social-link w-inline-block"><div class="blogpost1_social-icon w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.9728 6.7174C20.5084 7.33692 19.947 7.87733 19.3103 8.31776C19.3103 8.47959 19.3103 8.64142 19.3103 8.81225C19.3154 11.7511 18.1415 14.5691 16.0518 16.6345C13.962 18.6999 11.1312 19.8399 8.19405 19.7989C6.49599 19.8046 4.81967 19.4169 3.29642 18.6661C3.21428 18.6302 3.16131 18.549 3.16162 18.4593V18.3604C3.16162 18.2313 3.26623 18.1267 3.39527 18.1267C5.06442 18.0716 6.67402 17.4929 7.99634 16.4724C6.48553 16.4419 5.12619 15.5469 4.5006 14.1707C4.46901 14.0956 4.47884 14.0093 4.52657 13.9432C4.57429 13.8771 4.653 13.8407 4.73425 13.8471C5.19342 13.8932 5.65718 13.8505 6.1002 13.7212C4.43239 13.375 3.17921 11.9904 2.99986 10.2957C2.99349 10.2144 3.02992 10.1357 3.096 10.0879C3.16207 10.0402 3.24824 10.0303 3.32338 10.062C3.77094 10.2595 4.25409 10.3635 4.74324 10.3676C3.28184 9.40846 2.65061 7.58405 3.20655 5.92622C3.26394 5.76513 3.40181 5.64612 3.5695 5.61294C3.73718 5.57975 3.90996 5.63728 4.02432 5.76439C5.99639 7.86325 8.70604 9.11396 11.5819 9.25279C11.5083 8.95885 11.4721 8.65676 11.4741 8.35372C11.501 6.76472 12.4842 5.34921 13.9634 4.76987C15.4425 4.19054 17.1249 4.56203 18.223 5.71044C18.9714 5.56785 19.695 5.31645 20.3707 4.96421C20.4202 4.93331 20.483 4.93331 20.5325 4.96421C20.5634 5.01373 20.5634 5.07652 20.5325 5.12604C20.2052 5.87552 19.6523 6.50412 18.9509 6.92419C19.5651 6.85296 20.1685 6.70807 20.7482 6.49264C20.797 6.45942 20.8611 6.45942 20.9099 6.49264C20.9508 6.51134 20.9814 6.54711 20.9935 6.59042C21.0056 6.63373 20.998 6.68018 20.9728 6.7174Z" fill="CurrentColor"/>
+</svg></div></a><a id="facebook-button" href="reducing-cloud-costs-on-kubernetes-dev-envs.html#" class="blogpost1_social-link w-inline-block"><div class="blogpost1_social-icon w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16.5 6H13.5C12.9477 6 12.5 6.44772 12.5 7V10H16.5C16.6137 9.99748 16.7216 10.0504 16.7892 10.1419C16.8568 10.2334 16.8758 10.352 16.84 10.46L16.1 12.66C16.0318 12.8619 15.8431 12.9984 15.63 13H12.5V20.5C12.5 20.7761 12.2761 21 12 21H9.5C9.22386 21 9 20.7761 9 20.5V13H7.5C7.22386 13 7 12.7761 7 12.5V10.5C7 10.2239 7.22386 10 7.5 10H9V7C9 4.79086 10.7909 3 13 3H16.5C16.7761 3 17 3.22386 17 3.5V5.5C17 5.77614 16.7761 6 16.5 6Z" fill="CurrentColor"/>
+</svg></div></a></div></div><div class="blogpost1_tag-list-wrapper"><div class="blogpost1_tag-list"><a href="reducing-cloud-costs-on-kubernetes-dev-envs.html#" class="blogpost1_tag-item w-inline-block"><div>Tag one</div></a><a href="reducing-cloud-costs-on-kubernetes-dev-envs.html#" class="blogpost1_tag-item w-inline-block"><div>Tag two</div></a><a href="reducing-cloud-costs-on-kubernetes-dev-envs.html#" class="blogpost1_tag-item w-inline-block"><div>Tag three</div></a><a href="reducing-cloud-costs-on-kubernetes-dev-envs.html#" class="blogpost1_tag-item w-inline-block"><div>Tag three</div></a></div></div></div><div class="blogpost1_divider"></div><div class="blogpost1_author-wrapper"><div class="blogpost1_author-image-wrapper"><img src="/assets/627bf36ecef36c976239c7b6/63974e0b052373df37ce13b7_gahl-saraf.jpg" loading="lazy" alt="" sizes="(max-width: 479px) 56px, (max-width: 767px) 12vw, (max-width: 991px) 7vw, 6vw" srcset="/assets/627bf36ecef36c976239c7b6/63974e0b052373df37ce13b7_gahl-saraf-p-500.jpg 500w, /assets/627bf36ecef36c976239c7b6/63974e0b052373df37ce13b7_gahl-saraf-p-800.jpg 800w, /assets/627bf36ecef36c976239c7b6/63974e0b052373df37ce13b7_gahl-saraf.jpg 1000w" class="blogpost1_author-image"/></div><div class="blogpost1_author-text"><div class="text-size-medium text-weight-semibold">Gahl Saraf</div><div class="w-dyn-bind-empty"></div></div></div></div></div></div><div class="div-block-9"></div></div><div class="page-padding"></div><section class="section-cta25"><div class="page-padding padding-large mobilesmall"><div class="container-large is-main-cta"><div class="padding-vertical padding-xlarge"><div class="text-align-center max-width-xlarge align-center"><div class="margin-bottom margin-small"><h2><strong>Stop wasting time worrying about your dev env.<br/>Concentrate on your code.</strong></h2></div><p class="text-size-medium max-width-large align-center">The ability to focus on doing what you love best can be more than a bottled-up desire lost in a sea of frustration. Make it a reality — with Raftt.</p><div class="margin-top margin-small"><div class="button-row is-button-row-center"><div class="button-wrapper is-button-wrapper-center"><a href="/https://docs.raftt.io/docs/basics/quickstart" class="button w-button"><strong>Get Raftt for free</strong></a></div><div class="button-wrapper is-button-wrapper-center"><a href="https://calendly.com/royiarchy/raftt-demo" target="_blank" class="button is-dark w-button"><strong>Book a demo</strong></a></div></div></div></div></div></div></div></section><div class="footer2_component"><div class="page-padding padding-0 padding-large"><div class="container-large"><div class="padding-vertical"><div class="padding-bottom padding-xxlarge"><div class="w-layout-grid footer2_top-wrapper"><div class="w-layout-grid footer2_left-wrapper"><div class="footer-logo-wrap"><a href="/index.html" id="w-node-_24105036-7c91-9f04-6011-44bfd9184de8-d9184de0" class="footer2_logo-link w-nav-brand"><div class="svg-image w-embed"><svg width="74" height="113" viewBox="0 0 74 113" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+<path d="M37.6108 111.844H42.5525V88.0962C42.5525 85.97 43.3803 84.7814 45.5543 84.7814C45.9139 84.7814 46.4239 84.7814 46.4239 84.7814V80.7717C46.4239 80.7717 46.5745 80.7717 45.5543 80.7717C39.4838 80.7717 37.6108 83.7601 37.6108 87.9874V111.844V111.844Z" fill="currentColor"/>
+<path d="M62.7534 84.7478H67.6951V104.98C67.6951 107.106 68.5229 108.295 70.6969 108.295C71.901 108.295 73.9997 108.295 73.9997 108.295V112.305C73.9997 112.305 71.717 112.305 70.6969 112.305C64.6264 112.305 62.7534 109.316 62.7534 105.089V84.7478Z" fill="currentColor"/>
+<path d="M50.1694 84.7478H55.1111V104.98C55.1111 107.106 55.9389 108.295 58.1129 108.295C59.317 108.295 59.4592 108.295 59.4592 108.295V112.305C59.4592 112.305 59.1331 112.305 58.1129 112.305C52.0424 112.305 50.1694 109.316 50.1694 105.089V84.7478Z" fill="currentColor"/>
+<path d="M0 90.7498H4.9835C4.9835 101.28 4.9835 95.6132 4.9835 111.844H0V90.7498Z" fill="currentColor"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M26.6068 106.387H26.6988V111.844H31.6404V99.2127C31.6404 93.6628 28.9647 90.5154 22.6852 90.5154C16.9073 90.5154 14.031 93.1773 13.1781 97.5385L17.9693 98.1831C18.6047 95.6635 20.0847 94.6757 22.5096 94.6757C25.5114 94.6757 26.7071 96.2913 26.7071 99.2546H20.2353C14.7919 99.2546 12.3921 102.126 12.3921 106.102C12.3921 110.262 15.2099 112.296 19.2235 112.296C22.9611 112.305 25.595 110.262 26.6068 106.387ZM26.6988 102.954V103.649C26.6988 106.286 24.4829 108.228 21.0714 108.228C18.2536 108.228 17.2836 106.839 17.2836 105.315C17.2836 103.833 18.5713 102.954 20.9794 102.954H26.6988Z" fill="currentColor"/>
+<path d="M74 90.7498H67.6953C67.6953 93.3029 69.8192 95.3788 72.4531 95.3788H74V90.7498V90.7498Z" fill="currentColor"/>
+<path d="M11.7061 95.3788H4.9834C4.9834 92.8257 7.1156 90.7498 9.74114 90.7498H11.7061V95.3788Z" fill="currentColor"/>
+<path d="M33.0283 90.7498H64.3843V94.9603H33.0283V90.7498Z" fill="currentColor"/>
+<path d="M0 72.9429C8.44676 69.7084 18.2874 54.7508 18.2874 36.9034C18.2874 16.6905 8.42236 2.07574 0 0.304688H56.1379V0.326039C66.0598 0.991183 74 17.1129 74 36.9034C74 53.6371 68.3232 68.5414 60.5717 72.9033C59.1702 73.492 57.7961 74.0719 56.2691 74.2646C53.6684 74.475 51.4363 73.8319 49.0656 72.9083C44.8666 71.2723 41.7734 71.2647 37.5908 72.9429C36.0349 73.5672 34.5106 74.1531 32.8116 74.2646C30.5317 74.2646 28.5485 73.7506 26.4789 72.8813C22.0839 71.0352 20.2684 71.049 15.0036 72.9429C13.208 73.5888 10.9087 74.2646 9.07937 74.2646C6.18415 74.3853 1.74 73.4028 0 72.9429Z" fill="currentColor"/>
+</svg></div></a><div class="margin-top-auto"><a id="w-node-_24105036-7c91-9f04-6011-44bfd9184deb-d9184de0" href="reducing-cloud-costs-on-kubernetes-dev-envs.html#" class="footer2_link text-style-muted">Ⓒ Raftt 2023</a></div></div><div class="footer2_link-list"><div class="margin-bottom margin-tiny"><div class="text-weight-semibold">raftt</div></div><a href="/about-us.html" class="footer2_link">About</a><a href="/https://docs.raftt.io/docs/intro/raftt" class="footer2_link">Docs</a><a href="/pricing.html" class="footer2_link">Pricing</a><a href="/https://docs.raftt.io/docs/basics/quickstart" class="footer2_link">Try the sample project</a><a href="/contact.html" class="footer2_link">Request a demo</a></div><div class="footer2_link-list"><div class="margin-bottom margin-tiny"><div class="text-weight-semibold">Community</div></div><a href="https://join.slack.com/t/rafttcommunity/shared_invite/zt-196nlb5ra-ZcIw~2T7Glq5NuBaqIlgcA" class="footer2_link">Cruise with us</a><a href="/blog.html" class="footer2_link">Blog</a><a href="mailto:hello@raftt.io" class="footer2_link">Email</a><div class="w-layout-grid footer2_social-list"><a href="https://join.slack.com/t/rafttcommunity/shared_invite/zt-196nlb5ra-ZcIw~2T7Glq5NuBaqIlgcA" target="_blank" class="footer2_social-link w-inline-block"><div class="social-icon slack w-embed"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><g class="nc-icon-wrapper" fill="CurrentColor"><path data-color="color-2" d="M5.867,0a1.6,1.6,0,1,0,0,3.2h1.6V1.6A1.6,1.6,0,0,0,5.867,0"></path><path d="M5.867,4.267H1.6a1.6,1.6,0,0,0,0,3.2H5.867a1.6,1.6,0,0,0,0-3.2" fill="CurrentColor"></path><path data-color="color-2" d="M16,5.867a1.6,1.6,0,1,0-3.2,0v1.6h1.6a1.6,1.6,0,0,0,1.6-1.6"></path><path d="M11.733,5.867V1.6a1.6,1.6,0,1,0-3.2,0V5.866a1.6,1.6,0,1,0,3.2,0" fill="CurrentColor"></path><path data-color="color-2" d="M10.133,16a1.6,1.6,0,1,0,0-3.2h-1.6v1.6a1.6,1.6,0,0,0,1.6,1.6"></path><path d="M10.133,11.733H14.4a1.6,1.6,0,0,0,0-3.2H10.133a1.6,1.6,0,1,0,0,3.2h0" fill="CurrentColor"></path><path data-color="color-2" d="M0,10.133a1.6,1.6,0,0,0,1.6,1.6h0a1.6,1.6,0,0,0,1.6-1.6v-1.6H1.6a1.6,1.6,0,0,0-1.6,1.6"></path><path d="M4.267,10.133V14.4a1.6,1.6,0,0,0,3.2,0V10.133a1.6,1.6,0,0,0-1.6-1.6h0a1.6,1.6,0,0,0-1.6,1.6" fill="CurrentColor"></path></g></svg></div></a><a href="https://twitter.com/rafttio" target="_blank" class="footer2_social-link w-inline-block"><div class="social-icon w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.9728 6.7174C20.5084 7.33692 19.947 7.87733 19.3103 8.31776C19.3103 8.47959 19.3103 8.64142 19.3103 8.81225C19.3154 11.7511 18.1415 14.5691 16.0518 16.6345C13.962 18.6999 11.1312 19.8399 8.19405 19.7989C6.49599 19.8046 4.81967 19.4169 3.29642 18.6661C3.21428 18.6302 3.16131 18.549 3.16162 18.4593V18.3604C3.16162 18.2313 3.26623 18.1267 3.39527 18.1267C5.06442 18.0716 6.67402 17.4929 7.99634 16.4724C6.48553 16.4419 5.12619 15.5469 4.5006 14.1707C4.46901 14.0956 4.47884 14.0093 4.52657 13.9432C4.57429 13.8771 4.653 13.8407 4.73425 13.8471C5.19342 13.8932 5.65718 13.8505 6.1002 13.7212C4.43239 13.375 3.17921 11.9904 2.99986 10.2957C2.99349 10.2144 3.02992 10.1357 3.096 10.0879C3.16207 10.0402 3.24824 10.0303 3.32338 10.062C3.77094 10.2595 4.25409 10.3635 4.74324 10.3676C3.28184 9.40846 2.65061 7.58405 3.20655 5.92622C3.26394 5.76513 3.40181 5.64612 3.5695 5.61294C3.73718 5.57975 3.90996 5.63728 4.02432 5.76439C5.99639 7.86325 8.70604 9.11396 11.5819 9.25279C11.5083 8.95885 11.4721 8.65676 11.4741 8.35372C11.501 6.76472 12.4842 5.34921 13.9634 4.76987C15.4425 4.19054 17.1249 4.56203 18.223 5.71044C18.9714 5.56785 19.695 5.31645 20.3707 4.96421C20.4202 4.93331 20.483 4.93331 20.5325 4.96421C20.5634 5.01373 20.5634 5.07652 20.5325 5.12604C20.2052 5.87552 19.6523 6.50412 18.9509 6.92419C19.5651 6.85296 20.1685 6.70807 20.7482 6.49264C20.797 6.45942 20.8611 6.45942 20.9099 6.49264C20.9508 6.51134 20.9814 6.54711 20.9935 6.59042C21.0056 6.63373 20.998 6.68018 20.9728 6.7174Z" fill="CurrentColor"/>
+</svg></div></a><a href="https://www.linkedin.com/company/raftt" target="_blank" class="footer2_social-link w-inline-block"><div class="social-icon w-embed"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3ZM8 18C8.27614 18 8.5 17.7761 8.5 17.5V10.5C8.5 10.2239 8.27614 10 8 10H6.5C6.22386 10 6 10.2239 6 10.5V17.5C6 17.7761 6.22386 18 6.5 18H8ZM7.25 9C6.42157 9 5.75 8.32843 5.75 7.5C5.75 6.67157 6.42157 6 7.25 6C8.07843 6 8.75 6.67157 8.75 7.5C8.75 8.32843 8.07843 9 7.25 9ZM17.5 18C17.7761 18 18 17.7761 18 17.5V12.9C18.0325 11.3108 16.8576 9.95452 15.28 9.76C14.177 9.65925 13.1083 10.1744 12.5 11.1V10.5C12.5 10.2239 12.2761 10 12 10H10.5C10.2239 10 10 10.2239 10 10.5V17.5C10 17.7761 10.2239 18 10.5 18H12C12.2761 18 12.5 17.7761 12.5 17.5V13.75C12.5 12.9216 13.1716 12.25 14 12.25C14.8284 12.25 15.5 12.9216 15.5 13.75V17.5C15.5 17.7761 15.7239 18 16 18H17.5Z" fill="CurrentColor"/>
+</svg></div></a></div></div><div class="footer2_link-list"><div class="margin-bottom margin-tiny"><div class="text-weight-semibold">Legal</div></div><a href="/legal/terms-of-use.html" class="footer2_link">Terms of service</a><a href="/legal/privacy-policy.html" class="footer2_link">Privacy policy</a><div class="footer-cert-logos-wrapper"><img src="/assets/627284f90a9a98a4363db8a6/62ea9a689b98551c504414bb_SOC.min.png" loading="lazy" id="w-node-_17785d53-f946-87d0-826c-5f5380d44ef6-d9184de0" alt="" class="soc-img"/><div id="w-node-_93c8a9be-563b-5986-a495-33c661e90bc4-d9184de0" class="cn-wrap"><div id="w-node-_36df41f1-d198-e1c0-c025-3fc14e1b248a-4e1b248a" class="image-wrapper"><div id="w-node-_36df41f1-d198-e1c0-c025-3fc14e1b248b-4e1b248a" class="dark-image-wrap"><img src="/assets/627284f90a9a98a4363db8a6/62ea994f67dbd2d7f01421e6_cncf-stacked-white.svg" loading="lazy" alt="" class="mode-component-img"/></div><div id="w-node-_36df41f1-d198-e1c0-c025-3fc14e1b248d-4e1b248a" class="light-image-wrap hide"><img src="/assets/627284f90a9a98a4363db8a6/62ea994eaf55923eec12a16b_cncf-stacked-black.svg" loading="lazy" alt="" class="mode-component-img"/></div></div></div></div></div></div></div></div></div></div></div></div></header><script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=627284f90a9a98a4363db8a6" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><script src="/assets/627284f90a9a98a4363db8a6/js/webflow.2a1893773.js" type="text/javascript"></script><!-- script src="http://localhost:5500/a-debug.js"></script> --><script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.0.3/showdown.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js"></script>
+<script src="https://rafttio-web.s3.eu-central-1.amazonaws.com/prism.js"></script>
+<script>
+    showdown.setOption("tables", true);
+    function rtfToMarkdown(txt) {
+        txt = txt.replace(/<p>/g, '');
+        txt = txt.replace(/<\/p>/g, '\n\n');
+        txt = txt.replace(/<br>/g, '\n');
+        txt = txt.replace(/&nbsp;/g, ' ');
+        txt = txt.replace(/&gt;/g, '>');
+        txt = txt.replace(/&lt;/g, '<');
+        txt = txt.replace(/&amp;/g, '&');
+        return txt;
+    }
+
+    function markdownToHtml(txt) {
+        const converter = new showdown.Converter({
+            noHeaderId: true,
+            headerLevelStart: 2,
+            literalMidWordUnderscores: true
+        });
+        const html = converter.makeHtml(txt);
+        return html;
+    }
+
+    const markdowns = $('.markdown');
+    markdowns.each(function() {
+        const txt = rtfToMarkdown($(this).html());
+        const html = markdownToHtml(txt);
+        $(this).html(html);
+    });
+
+    $('code:not([class*=language-])').each(function() {
+        this.className = "language-markup";
+    });
+</script>
+
+<script>
+  const headings = $('h1[class^="heading-"], h2[class^="heading-"], h3[class^="heading-"]');
+  headings.each(function() {
+    const html = $(this).html().replace(/&amp;/g, '&');
+    $(this).html(html);
+  });
+</script>
+
+<script>
+    const facebookButton = document.getElementById('facebook-button');
+    facebookButton.setAttribute('target', '_blank');
+    facebookButton.setAttribute(
+        'href',
+        `https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`
+    );
+</script>
+
+<script>
+    const twitterButton = document.getElementById('twitter-button');
+    twitterButton.setAttribute('target', '_blank');
+    twitterButton.setAttribute(
+        'href',
+        `https://twitter.com/share?url=${window.location.href}`
+    );
+</script>
+
+<script>
+    const linkedinButton = document.getElementById('linkedin-button');
+    linkedinButton.setAttribute('target', '_blank');
+    linkedinButton.setAttribute(
+        'href',
+        `https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}&title=${document.title}`
+    );
+</script></body></html>
